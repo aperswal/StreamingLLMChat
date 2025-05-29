@@ -1,0 +1,65 @@
+.chatHistory {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.emptyState {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 50px;
+    font-size: 16px;
+}
+
+.messageWrapper {
+    margin-bottom: 16px;
+    display: flex;
+}
+
+.userMessage {
+    justify-content: flex-end;
+}
+
+.llmMessage {
+    justify-content: flex-start;
+}
+
+.messageBubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chatHistoryTitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 32px;
+    color: #333;
+    text-align: center;
+}
+
+.userMessage .messageBubble {
+    background-color: #007bff;
+    color: white;
+}
+
+.llmMessage .messageBubble {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.messageText {
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.timestamp {
+    font-size: 11px;
+    opacity: 0.7;
+    display: block;
+}
