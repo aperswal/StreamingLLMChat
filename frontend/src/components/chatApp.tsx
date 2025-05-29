@@ -24,7 +24,7 @@ export default function ChatApp() {
                 <div className={styles.historySection}>
                     <ChatHistory messages={messages} />
                 </div>
-                <div>
+                <div className = {styles.inputSection}>
                     <ChatInput onSendMessage={handleSendMessage} />
                 </div>
             </div>
