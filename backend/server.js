@@ -26,7 +26,12 @@ app.post('/api/chat', async (req, res) => {
         const { message } = req.body;
         console.log('Received message:', message);
 
-        const completion = await openai.chat.completions.create({  
+        res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+
+        const stream = await openai.chat.completions.create({  
             model: "gpt-4.1",  
             messages: [
                 {
@@ -44,15 +49,29 @@ app.post('/api/chat', async (req, res) => {
                                 + message,
                 },
             ],
+
+            stream: true,
         });
+
+        for await (const chunk of stream) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+                res.write(`data: ${JSON.stringify({ content })}\n\n`);
+            }
+        }
         
-        const reply = completion.choices[0].message.content;
-        console.log('OpenAI reply:', reply);
-        res.json({ reply });
+        res.write('data: [DONE]\n\n');
+        res.end();
 
     } catch (error) {
-        console.error('Error generating response:', error);
-        res.status(500).json({ error: 'Failed to generate response' });
+        console.error('Error in chat endpoint:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Failed to process chat request' });
+        } else {
+            res.write(`data: ${JSON.stringify({ error: 'server_error' })}\n\n`);
+            res.write('data: [DONE]\n\n');
+            res.end();
+        }
     }
 });
 

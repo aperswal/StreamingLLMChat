@@ -1,44 +1,47 @@
 import { useState } from 'react';
 import { Message } from '../types/message';
-import { sendChatMessage } from '../lib/chatApi.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { createMessage } from '../utils/addMessage.ts'; 
+import { useChatMutation } from './useChatMutation.tsx';
 
 export const useChat = () => {
     const [messages, setMessages] = useState<Message[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
 
     const addMessage = (text: string, sender: 'user' | 'llm'): Message => {
-        const message: Message = {
-            uuid: uuidv4(),
-            text,
-            sender,
-            timestamp: new Date(),
-        };
-
+        const message = createMessage(text, sender);
         setMessages(prev => [...prev, message]);
         return message;
     };
 
-    const handleSendMessage = async (text: string) => {
-        if (isLoading) return;
+    const updateLastMessage = (chunk: string) => {
+        setMessages(prev => {
+            const newMessages = [...prev];
+            const lastMessageIndex = newMessages.length - 1;
+            if (lastMessageIndex >= 0 && newMessages[lastMessageIndex].sender === 'llm') {
+                newMessages[lastMessageIndex] = {
+                    ...newMessages[lastMessageIndex],
+                    text: newMessages[lastMessageIndex].text + chunk,
+                };
+            }
+            return newMessages;
+        });
+    };
 
-        addMessage(text, 'user');
-        setIsLoading(true);
-
-        try {
-            const reply = await sendChatMessage(text);
-            addMessage(reply, 'llm');
-        } catch (error) {
-            console.error('Error sending message:', error);
+    const chatMutation = useChatMutation({
+        onMessageUpdate: updateLastMessage,
+        onError: (error) => {
             addMessage("Sorry I couldn't process that", 'llm');
-        } finally {
-            setIsLoading(false);
         }
+    });
+
+    const handleSendMessage = (text: string) => {
+        addMessage(text, 'user');
+        addMessage("", 'llm');
+        chatMutation.mutate(text);
     };
 
     return {
         messages,
-        isLoading,
+        isLoading: chatMutation.isPending,
         handleSendMessage,
-    }
-}
+    };
+};

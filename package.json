@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "@tanstack/react-query": "^5.79.0",
     "openai": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.28"
   }
 }
