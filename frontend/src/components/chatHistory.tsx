@@ -32,7 +32,7 @@ export default function ChatHistory({ messages }: ChatHistoryProps) {
             ) : (
                 messages.map((message) => (
                     <div 
-                        key={message.id}
+                        key={message.uuid}
                         className={`${styles.messageWrapper} ${
                             message.sender === 'user' ? styles.userMessage : styles.llmMessage
                         }`}

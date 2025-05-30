@@ -1,5 +1,5 @@
 export interface Message {
-    id: string;
+    uuid: string;
     text: string;
     sender: 'user' | 'llm';
     timestamp: Date;

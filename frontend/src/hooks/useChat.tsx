@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Message } from '../types/message';
 import { sendChatMessage } from '../lib/chatApi.ts';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useChat = () => {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -8,7 +9,7 @@ export const useChat = () => {
 
     const addMessage = (text: string, sender: 'user' | 'llm'): Message => {
         const message: Message = {
-            id: Date.now().toString(),
+            uuid: uuidv4(),
             text,
             sender,
             timestamp: new Date(),

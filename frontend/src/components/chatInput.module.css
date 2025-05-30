@@ -14,7 +14,7 @@
 
 .messageInput {
     width: 100%;
-    padding: 16px 80px 16px 20px;  /* Add right padding for button space */
+    padding: 16px 80px 16px 20px;  
     border: 1px solid #ddd;
     border-radius: 25px;
     outline: none;
