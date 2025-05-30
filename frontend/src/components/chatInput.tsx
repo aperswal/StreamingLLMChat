@@ -3,14 +3,15 @@ import styles from './chatInput.module.css';
 
 interface ChatInputProps {
     onSendMessage: (message: string) => void;
+    disabled?: boolean;
 }
 
-export default function ChatInput ({ onSendMessage }: ChatInputProps) {
+export default function ChatInput ({ onSendMessage, disabled}: ChatInputProps) {
     const [message, setMessage] = useState('');
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        if (message.trim()) {
+        if (message.trim() && !disabled) {
             onSendMessage(message.trim());
             setMessage('');
         }
@@ -25,9 +26,14 @@ export default function ChatInput ({ onSendMessage }: ChatInputProps) {
                     onChange = {(event) => setMessage(event.target.value)}
                     placeholder = "Ask anything..."
                     className={styles.messageInput}
+                    disabled={disabled}
                 />
-                <button type="submit" className={styles.sendButton}>
-                    Send
+                <button 
+                    type="submit" 
+                    className={styles.sendButton}
+                    disabled={disabled || !message.trim()}
+                >
+                    {disabled ? "..." : "Send"}
                 </button>
             </form>
         </div>

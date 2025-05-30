@@ -1,22 +1,11 @@
-import React, { useState } from 'react';
-import { Message } from '../types/message';
-import ChatHistory from './chatHistory.tsx';  // Remove .tsx extension
-import ChatInput from './chatInput.tsx';      // Remove .tsx extension
-import styles from './chatApp.module.css'; // Add CSS import
+import React from 'react';
+import ChatHistory from './chatHistory.tsx';   
+import ChatInput from './chatInput.tsx';      
+import styles from './chatApp.module.css'; 
+import { useChat } from '../hooks/useChat.tsx'; 
 
 export default function ChatApp() {
-    const [messages, setMessages] = useState<Message[]>([]);
-    
-    const handleSendMessage = (text: string) => {
-        const userMessage: Message = {
-            id: Date.now().toString(),
-            text,
-            sender: 'user',
-            timestamp: new Date(),
-        }
-
-        setMessages(prev => [...prev, userMessage]);
-    };
+   const { messages, isLoading, handleSendMessage } = useChat();
 
     return (
         <div className={styles.chatApp}>
@@ -25,7 +14,10 @@ export default function ChatApp() {
                     <ChatHistory messages={messages} />
                 </div>
                 <div className = {styles.inputSection}>
-                    <ChatInput onSendMessage={handleSendMessage} />
+                    <ChatInput 
+                        onSendMessage={handleSendMessage} 
+                        disabled={isLoading}
+                    />
                 </div>
             </div>
         </div>
